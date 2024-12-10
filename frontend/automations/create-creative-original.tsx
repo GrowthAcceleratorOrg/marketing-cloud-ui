@@ -10,9 +10,9 @@ import {
 } from '@jsonforms/material-renderers';
 
 import SelectedCreatives from "../selected-creatives";
-import { Automation } from "../types";
+import { Automation } from "../automation-status/types";
 import runAutomation from "../run-automation";
-import AutomationStatusList from "../automation-status-list";
+import AutomationStatusList from "../automation-status/automation-status-list";
 import renderers from "../custom-ui/renderers";
 
 const initialData = {};
@@ -35,7 +35,7 @@ const uiSchema = {
   ],
 };
 
-export default function CreateCreativeAutomatedRefresh() {
+export default function CreateCreativeOriginal() {
   const cursor = useCursor();
   // load selected records and fields
   useLoadable(cursor);
@@ -70,7 +70,7 @@ export default function CreateCreativeAutomatedRefresh() {
           "properties": {
             "name": {
               "type": "string",
-              "enum": ['Audience'].sort(),
+              "enum": ['Audience', 'Messaging'].sort(),
             },
             "attribute": {
               "type": "string",
@@ -88,10 +88,11 @@ export default function CreateCreativeAutomatedRefresh() {
           "required": ['name', 'attribute', 'category', 'parameter']
         }
       }
-    }
+    },
+    "required": ['createdBy', 'blocks']
   };
 
-  const onClick = async () => runAutomation<object>('/creative/create-automated-refresh', cursor.selectedRecordIds, data, setAutomations);
+  const onClick = async () => runAutomation<object>('/creative/create-original', cursor.selectedRecordIds, data, setAutomations);
   const onChange = (formState) => {
     setData(formState.data);
     setErrors(formState.errors);
@@ -114,7 +115,7 @@ export default function CreateCreativeAutomatedRefresh() {
         <Grid size={12}>
           <Stack direction="row" spacing={2}>
             <Button variant="outlined" disabled={!cursor?.selectedRecordIds?.length || Boolean(errors.length)} onClick={onClick}>
-              Create refreshes
+              Create originals
             </Button>
           </Stack>
         </Grid>
